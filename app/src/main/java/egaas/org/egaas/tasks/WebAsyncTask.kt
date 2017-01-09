@@ -1,18 +1,22 @@
 package egaas.org.egaas.tasks
 
 import android.os.AsyncTask
+import android.util.Log
 import android.webkit.WebView
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.util.*
 
 /**
  * Created by faraday on 5/7/16.
  * ${PROJECT}
  */
 
-class WebAsyncRequest(val httpClient: OkHttpClient, val webView: WebView): AsyncTask<String, Int, String>() {
+open class WebAsyncRequest(val httpClient: OkHttpClient): AsyncTask<String, Int, String>() {
+
+    private val TAG = this@WebAsyncRequest.javaClass.canonicalName
 
     override fun doInBackground(vararg params: String?): String? {
         try {
@@ -21,7 +25,13 @@ class WebAsyncRequest(val httpClient: OkHttpClient, val webView: WebView): Async
 
             val gson = Gson()
             val json = gson.fromJson(response.body().string(), JsonObject::class.java)
-            val pool = json.get("pool").asString
+
+            val arr = json.getAsJsonArray("nodes")
+            if (arr == null || arr.size() == 0) {
+                val elem = arr.get(Random().nextInt() % arr.size())
+                return elem.asString
+            }
+            val pool = "node0.egaas.org"
             return pool
         } catch (e: Exception) {
             e.printStackTrace()
@@ -32,6 +42,5 @@ class WebAsyncRequest(val httpClient: OkHttpClient, val webView: WebView): Async
 
     override fun onPostExecute(result: String?) {
         super.onPostExecute(result)
-        webView.loadUrl(result)
     }
 }

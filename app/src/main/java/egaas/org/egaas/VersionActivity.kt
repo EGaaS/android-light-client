@@ -8,16 +8,11 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 
-class MainActivity : AppCompatActivity() {
+class VersionActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        val fragment = MainActivityFragment()
-        fragment.arguments = intent.extras
-        fragmentManager.beginTransaction()
-                .add(android.R.id.content, fragment)
-                .commit()
+        setContentView(R.layout.activity_version)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

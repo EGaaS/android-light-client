@@ -6,13 +6,13 @@ package egaas.org.egaas
  */
 import android.annotation.TargetApi
 import android.app.Activity
+import android.app.Fragment
 import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
-import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
 import android.util.Log
 import android.webkit.ValueCallback
@@ -157,10 +157,9 @@ class NewUploadHandler(private val fragment: Fragment) {
     private var mCapturedMedia: Uri? = null
 
     fun onResult(resultCode: Int, intent: Intent?) {
-        val uris: Array<Uri>?
+        val uris: Array<Uri>? = parseResult(resultCode, intent)
         // As the media capture is always supported, we can't use
         // FileChooserParams.parseResult().
-        uris = parseResult(resultCode, intent)
 
         uploadMessage?.onReceiveValue(uris)
     }

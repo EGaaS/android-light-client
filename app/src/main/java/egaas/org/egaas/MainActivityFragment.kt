@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.TargetApi
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Fragment
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -11,7 +12,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -30,50 +30,25 @@ class MainActivityFragment : Fragment() {
     var webView: WebView? = null
     var mUploadHandler: UploadHandler? = null
     var mNewUploaderHandler: NewUploadHandler? = null
-    private val REQUEST_EXTERNAL_STORAGE = 1
-    private val PERMISSIONS_STORAGE = arrayOf(
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
-    private val POOL = "https://node001.egaas.org"
+    private var POOL = "https://node001.egaas.org"
 
 
-    /**
-     * Checks if the app has permission to write to device storage
-     *
-     * If the app does not has permission then the user will be prompted to grant permissions
-     *
-     * @param activity
-     */
-    fun verifyStoragePermissions(activity: Activity) {
-        // Check if we have write permission
-        val permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE)
-        }
-
-        val internetPermission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.INTERNET)
-        if (internetPermission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.INTERNET), 1)
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.fragment_main, container, false)
 
         webView = view.findViewById(R.id.webView) as WebView
-        webView?.setBackgroundColor(Color.parseColor("#18b8e8"))
+        webView?.setBackgroundColor(R.color.colorPrimary)
         webView?.setWebViewClient(CustomWebClient())
         webView?.setWebChromeClient(CustomChromeClient())
         initializeWebView()
 //        WebAsyncRequest(httpClient, webView!!).execute("http://getpool.dcoin.club")
-        Log.d(TAG, R.string.node_address.toString())
-        webView?.loadUrl(POOL)
-        verifyStoragePermissions(activity)
+        val key = resources.getString(R.string.node_type)
+        POOL = arguments.getString(key)
+        Log.d(TAG, POOL)
+//        webView?.loadUrl(POOL)
         return view
     }
 
@@ -132,7 +107,7 @@ class MainActivityFragment : Fragment() {
 
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
             if (url.endsWith(".mp4") || !url.contains(poolName!!)) {
-                val intent= Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 startActivity(intent)
                 return true
             } else {
