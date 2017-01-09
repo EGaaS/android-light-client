@@ -53,8 +53,7 @@ class VersionActivityFragment: Fragment() {
 
     fun nodeJSONArray(addr: String) {
         val request = LocalAsyncTask(activity)
-        val task = request.execute(addr)
-        Log.d(TAG, task.get())
+        request.execute(addr)
     }
 
     class LocalAsyncTask(val activity: Activity): WebAsyncRequest(OkHttpClient()) {

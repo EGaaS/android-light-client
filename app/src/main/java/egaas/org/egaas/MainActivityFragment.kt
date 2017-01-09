@@ -48,7 +48,7 @@ class MainActivityFragment : Fragment() {
         val key = resources.getString(R.string.node_type)
         POOL = arguments.getString(key)
         Log.d(TAG, POOL)
-//        webView?.loadUrl(POOL)
+        webView?.loadUrl(POOL)
         return view
     }
 

@@ -27,17 +27,17 @@ open class WebAsyncRequest(val httpClient: OkHttpClient): AsyncTask<String, Int,
             val json = gson.fromJson(response.body().string(), JsonObject::class.java)
 
             val arr = json.getAsJsonArray("nodes")
-            if (arr == null || arr.size() == 0) {
-                val elem = arr.get(Random().nextInt() % arr.size())
+            if (arr != null && arr.size() > 0) {
+                val elem = arr.get(Random().nextInt(arr.size()))
                 return elem.asString
             }
-            val pool = "node0.egaas.org"
+            val pool = "http://node0.egaas.org"
             return pool
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, e.toString())
         }
 
-        return "localhost"
+        return "http://localhost"
     }
 
     override fun onPostExecute(result: String?) {
