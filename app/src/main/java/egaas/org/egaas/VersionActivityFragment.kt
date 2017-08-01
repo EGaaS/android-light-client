@@ -24,8 +24,8 @@ class VersionActivityFragment: Fragment() {
 
     private val TAG = this@VersionActivityFragment.javaClass.canonicalName
 
-    private var mStableButton: Button? = null
-    private var mDevButton: Button? = null
+    private lateinit var mStableButton: Button
+    private lateinit var mDevButton: Button
 
     private val REQUEST_EXTERNAL_STORAGE = 1
     private val PERMISSIONS_STORAGE = arrayOf(
@@ -33,22 +33,22 @@ class VersionActivityFragment: Fragment() {
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view = inflater?.inflate(R.layout.fragment_version, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        val view = inflater.inflate(R.layout.fragment_version, container, false)
 
-        mStableButton = view?.findViewById(R.id.stable_server_button) as Button
-        mDevButton = view?.findViewById(R.id.dev_server_button) as Button
-        mStableButton?.setOnClickListener {
-            val value = resources.getString(R.string.stable_nodes)
+        mStableButton = view.findViewById(R.id.stable_server_button)
+        mDevButton = view.findViewById(R.id.dev_server_button)
+        mStableButton.setOnClickListener {
+            val value = resources.getString(R.string.nodes)
             nodeJSONArray(value)
         }
-        mDevButton?.setOnClickListener {
-            val value = resources.getString(R.string.dev_nodes)
+        mDevButton.setOnClickListener {
+            val value = resources.getString(R.string.nodes)
             nodeJSONArray(value)
         }
 
         verifyStoragePermissions(activity)
-        return view!!
+        return view
     }
 
     fun nodeJSONArray(addr: String) {

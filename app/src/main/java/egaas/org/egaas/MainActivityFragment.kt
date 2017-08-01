@@ -18,6 +18,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import egaas.org.egaas.tasks.SaveImageTask
+import egaas.org.egaas.tasks.WebAsyncRequest
+import okhttp3.OkHttpClient
 import java.net.URL
 
 /**
@@ -27,10 +29,10 @@ class MainActivityFragment : Fragment() {
 
     private val TAG = this@MainActivityFragment.javaClass.canonicalName
 
-    var webView: WebView? = null
+    lateinit var webView: WebView
     var mUploadHandler: UploadHandler? = null
     var mNewUploaderHandler: NewUploadHandler? = null
-    private var POOL = "https://node001.egaas.org"
+    private var POOL = ""
 
 
 
@@ -39,16 +41,14 @@ class MainActivityFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.fragment_main, container, false)
 
-        webView = view.findViewById(R.id.webView) as WebView
-        webView?.setBackgroundColor(R.color.colorPrimary)
-        webView?.setWebViewClient(CustomWebClient())
-        webView?.setWebChromeClient(CustomChromeClient())
+        webView = view.findViewById(R.id.webView)
+        webView.setBackgroundColor(R.color.colorPrimary)
+        webView.setWebViewClient(CustomWebClient())
+        webView.setWebChromeClient(CustomChromeClient())
         initializeWebView()
 //        WebAsyncRequest(httpClient, webView!!).execute("http://getpool.dcoin.club")
-        val key = resources.getString(R.string.node_type)
-        POOL = arguments.getString(key)
-        Log.d(TAG, POOL)
-        webView?.loadUrl(POOL)
+
+        nodeJSONArray(getString(R.string.nodes))
         return view
     }
 
@@ -62,6 +62,20 @@ class MainActivityFragment : Fragment() {
 //        super.onResume()
 //        webView?.restoreState(bundle)
 //    }
+
+    fun nodeJSONArray(addr: String) {
+        val request = LocalAsyncTask(activity)
+        request.execute(addr)
+    }
+
+    inner class LocalAsyncTask(val activity: Activity): WebAsyncRequest(OkHttpClient()) {
+
+        override fun onPostExecute(result: String?) {
+            if(result == null) return
+            Log.d(TAG, result)
+            webView.loadUrl(result)
+        }
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         Log.d(TAG, "onActivityResult")

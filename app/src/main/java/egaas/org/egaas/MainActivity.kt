@@ -48,7 +48,9 @@ class MainActivity : AppCompatActivity() {
         Log.d("JavaGoWV", "Actual activity onActivityResult")
     }
 
+    /*
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return false
     }
+    */
 }
