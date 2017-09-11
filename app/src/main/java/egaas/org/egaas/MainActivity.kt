@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 
         val fragment = MainActivityFragment()
         fragment.arguments = intent.extras
-        fragmentManager.beginTransaction()
+        supportFragmentManager.beginTransaction()
                 .add(android.R.id.content, fragment)
                 .commit()
     }
@@ -48,7 +48,9 @@ class MainActivity : AppCompatActivity() {
         Log.d("JavaGoWV", "Actual activity onActivityResult")
     }
 
+    /*
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         return false
     }
+    */
 }

@@ -1,10 +1,7 @@
 <resources>
-    <string name="app_name">EGaaS</string>
     <string name="action_settings">Settings</string>
     <string name="uploads_disabled">Upload disabled</string>
     <string name="node_type">node_type</string>
-    <string name="stable_nodes">http://egaas.org/nodes-1.0</string>
-    <string name="dev_nodes">http://egaas.org/nodes-0.1</string>
     <string name="dev_server_button">test</string>
     <string name="stable_server_button">stable</string>
 </resources>

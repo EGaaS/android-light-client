@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Apla Dev</string>
+    <string name="nodes">http://egaas.org/nodes-0.1</string>
+    <string name="file_authority">egaas.org.egaas2.dev.file</string>
+</resources>
