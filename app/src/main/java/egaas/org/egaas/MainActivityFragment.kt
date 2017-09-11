@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.TargetApi
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Fragment
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -12,6 +11,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
+import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -43,8 +43,11 @@ class MainActivityFragment : Fragment() {
 
         webView = view.findViewById(R.id.webView)
         webView.setBackgroundColor(R.color.colorPrimary)
-        webView.setWebViewClient(CustomWebClient())
-        webView.setWebChromeClient(CustomChromeClient())
+        webView.webViewClient = CustomWebClient()
+        webView.webChromeClient = CustomChromeClient()
+        webView.setDownloadListener { url, userAgent, contentDisposition, mimetype, contentLength ->
+            Log.d("!!!!", "$url, $userAgent, $contentDisposition, $mimetype, $contentLength")
+        }
         initializeWebView()
 //        WebAsyncRequest(httpClient, webView!!).execute("http://getpool.dcoin.club")
 
@@ -93,9 +96,15 @@ class MainActivityFragment : Fragment() {
         settings?.javaScriptEnabled = true
         settings?.allowFileAccessFromFileURLs = true
         settings?.domStorageEnabled = true
+        settings?.allowContentAccess = true
+        settings?.loadsImagesAutomatically = true
         settings?.cacheMode = WebSettings.LOAD_NO_CACHE
+        settings?.blockNetworkLoads = false
+        settings?.blockNetworkImage = false
+        settings?.databaseEnabled = true
         settings?.loadWithOverviewMode = true
         settings?.useWideViewPort = true
+        settings?.allowFileAccess = true
         settings?.setSupportZoom(true)
         webView?.clearHistory()
         webView?.clearFormData()
@@ -127,6 +136,10 @@ class MainActivityFragment : Fragment() {
             } else {
                 return false
             }
+        }
+
+        override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+            return super.shouldOverrideUrlLoading(view, request)
         }
     }
 
@@ -173,7 +186,11 @@ class MainActivityFragment : Fragment() {
 
             val newTitle = getTitleFromUrl(url)
 
-            AlertDialog.Builder(this@MainActivityFragment.activity).setTitle(newTitle).setMessage(message).setPositiveButton(android.R.string.ok) { dialog, which -> result.confirm() }.setCancelable(false).create().show()
+            AlertDialog.Builder(this@MainActivityFragment.activity)
+                    .setTitle(newTitle)
+                    .setMessage(message)
+                    .setPositiveButton(android.R.string.ok) { dialog, which -> result.confirm() }
+                    .setCancelable(false).create().show()
             return true
             // return super.onJsAlert(view, url, message, result);
         }
@@ -188,10 +205,10 @@ class MainActivityFragment : Fragment() {
             AlertDialog.Builder(this@MainActivityFragment.activity)
                     .setTitle(newTitle).setMessage(message)
                     .setPositiveButton(android.R.string.ok) {
-                        dialog, which -> result.confirm()
+                        _, _ -> result.confirm()
                     }
                     .setNegativeButton(android.R.string.cancel) {
-                        dialog, which -> result.cancel()
+                        _, _ -> result.cancel()
                     }
                     .setCancelable(false)
                     .create()

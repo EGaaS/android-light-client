@@ -6,13 +6,13 @@ package egaas.org.egaas
  */
 import android.annotation.TargetApi
 import android.app.Activity
-import android.app.Fragment
 import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
+import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
 import android.util.Log
 import android.webkit.ValueCallback
@@ -108,9 +108,9 @@ class UploadHandler(private val fragment: Fragment) {
         // recorder where available.
         val i = Intent(Intent.ACTION_GET_CONTENT)
         i.addCategory(Intent.CATEGORY_OPENABLE)
-        i.type = "*/*"
+        i.type = "image/*"
         val uri = Uri.parse(Environment.getExternalStorageDirectory().path + "/download/")
-        i.setDataAndType(uri, "*/*")
+        i.setDataAndType(uri, "image/*")
         val chooser = createChooserIntent(createCameraIntent())
         chooser.putExtra(Intent.EXTRA_INTENT, i)
         return chooser
@@ -222,7 +222,7 @@ class NewUploadHandler(private val fragment: Fragment) {
 
     @TargetApi(21)
     private fun createCaptureIntent(): Array<Intent>? {
-        var mimeType = "*/*"
+        var mimeType = "image/*"
         val acceptTypes = mParams!!.acceptTypes
         if (acceptTypes != null && acceptTypes.size > 0) {
             mimeType = acceptTypes[0]
@@ -247,7 +247,7 @@ class NewUploadHandler(private val fragment: Fragment) {
             val mediaFile = File.createTempFile(
                     System.currentTimeMillis().toString(), suffix, mediaPath)
             return FileProvider.getUriForFile(fragment.activity,
-                    FILE_PROVIDER_AUTHORITY, mediaFile)
+                    fragment.getString(R.string.file_authority), mediaFile)
         } catch (e: java.io.IOException) {
             throw RuntimeException(e)
         }
@@ -261,11 +261,10 @@ class NewUploadHandler(private val fragment: Fragment) {
         intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
         intent.putExtra(MediaStore.EXTRA_OUTPUT, mCapturedMedia)
         intent.clipData = ClipData.newUri(fragment.activity.contentResolver,
-                FILE_PROVIDER_AUTHORITY, mCapturedMedia)
+                fragment.getString(R.string.file_authority), mCapturedMedia)
         return intent
     }
 
 
     private val IMAGE_MIME_TYPE = "image/*"
-    private val FILE_PROVIDER_AUTHORITY = "egaas.org.egaas.file"
 }

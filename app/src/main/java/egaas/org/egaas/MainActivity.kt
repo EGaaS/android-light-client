@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 
         val fragment = MainActivityFragment()
         fragment.arguments = intent.extras
-        fragmentManager.beginTransaction()
+        supportFragmentManager.beginTransaction()
                 .add(android.R.id.content, fragment)
                 .commit()
     }
